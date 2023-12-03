@@ -10,7 +10,7 @@ class Day03Test {
     fun `day03 - part 1 - test input`() {
         val day03 = Day03()
         val result = day03.solvePart1Day03("advent2023/day03/day_03_part_1_test_input.txt")
-        assertEquals(8, result)
+        assertEquals(4361, result)
     }
 
     @Test
