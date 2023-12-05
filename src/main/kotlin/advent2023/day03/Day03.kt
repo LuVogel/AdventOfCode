@@ -1,4 +1,4 @@
-package advent2023.Day03
+package advent2023.day03
 
 import java.io.BufferedReader
 import java.io.File
