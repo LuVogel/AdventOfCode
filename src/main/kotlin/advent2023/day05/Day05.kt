@@ -112,7 +112,7 @@ class Day05 {
         val classLoader = this.javaClass.classLoader
         val resource = classLoader.getResource(filePath)
         val file = File(resource!!.toURI())
-
+        print("started")
         try {
             BufferedReader(FileReader(file)).use { bufferedReader ->
                 var l: String?
@@ -186,10 +186,9 @@ class Day05 {
         var location = Long.MAX_VALUE
         for (i in 0 until seedList.size step 2) {
             var seedStart = seedList[i]
-            var numbOfVals = seedList[i+1]
-            val sequence  = generateSequence(seedStart) {it + 1}.takeWhile { it <=  seedStart+numbOfVals }
-            for (j in sequence) {
-                var soil = getDestFromSource2(j, firstList)
+            var endRange = seedList[i+1]+seedStart
+            while (seedStart != endRange) {
+                var soil = getDestFromSource2(seedStart, firstList)
                 for (map in listOfMaps) {
                     try {
                         soil = getDestFromSource2(soil, map)
@@ -201,6 +200,7 @@ class Day05 {
                 if (soil < location) {
                     location = soil
                 }
+                seedStart += 1
             }
 
         }
