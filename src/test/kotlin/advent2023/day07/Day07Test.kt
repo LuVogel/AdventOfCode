@@ -16,20 +16,20 @@ class Day07Test {
     fun `day07 - part 1 - puzzle input`() {
         val day07 = Day07()
         val result = day07.solvePart1Day07("advent2023/day07/day_07_puzzle_input.txt")
-        assertEquals(4403592, result)
+        assertEquals(253603890, result)
     }
 
     @Test
     fun `day07 - part 2 -test input`() {
         val day07 = Day07()
         val result = day07.solvePart2Day07("advent2023/day07/day_07_part_1_test_input.txt")
-        assertEquals(71503, result)
+        assertEquals(5905, result)
     }
 
     @Test
     fun `day07 - part 2 - puzzle input`() {
         val day07 = Day07()
         val result = day07.solvePart2Day07("advent2023/day07/day_07_puzzle_input.txt")
-        assertEquals(38017587, result)
+        assertEquals(253630098, result)
     }
 }
