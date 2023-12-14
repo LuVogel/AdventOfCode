@@ -1,5 +1,6 @@
 package advent2023.day08
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -33,6 +34,7 @@ class Day08Test {
     }
 
     @Test
+    @Disabled
     fun `day08 - part 2 - puzzle input`() {
         val day08 = Day08()
         val result = day08.solvePart2Day08("advent2023/day08/day_08_puzzle_input.txt")

@@ -96,7 +96,7 @@ class Day02 {
                     var cBlue = colorMap["blue"] ?: 1
                     var cGreen = colorMap["green"] ?: 1
 
-                    sum += (cRed * cBlue * cGreen)
+                    sum += (cRed * cBlue * cGreen).also { print(it) }
                 }
                 return sum
             }

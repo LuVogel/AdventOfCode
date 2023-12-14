@@ -4,6 +4,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
+import java.lang.StringBuilder
 
 
 class Day08 {
@@ -65,49 +66,40 @@ class Day08 {
         try {
             BufferedReader(FileReader(file)).use { bufferedReader ->
                 var lines: String?
-                var instructions = ""
+                var instructions = StringBuilder()
                 var map: MutableMap<String, Pair<String, String>> = mutableMapOf()
                 while (bufferedReader.readLine().also { lines = it } != null) {
                     if (lines!!.isNotEmpty() && !lines!!.contains("=")) {
                         //instruction
-                        instructions += lines
+                        instructions.append(lines)
                     } else if (lines!!.isNotEmpty()) {
-                        var split = lines!!.split(" = ")
-                        var leftSide = split[0]
-                        var rightSplit = split[1].split("(")[1].split(")")[0].split(", ")
-                        map[leftSide] = Pair(rightSplit[0], rightSplit[1])
+                        var (leftside, rightside) = lines!!.split(" = ")
+                        var (first, second) = rightside.split("(")[1].split(")")[0].split(", ")
+                        map[leftside] = Pair(first, second)
                     }
                 }
-                var resultList : MutableList<String> = mutableListOf()
-                for (start in map.keys) {
-                    if (start.endsWith("A")) {
-                        resultList.add(start)
-                    }
-                }
+                var resultList : MutableList<String> = map.keys.filter { it.endsWith("A") }.toMutableList()
+                var instructionChars = instructions.toString().toList()
                 var counter: Long = 0
                 while (!resultList.all { it.endsWith("Z") }) {
-                    for (i in instructions.split("")) {
-                        if (i != "") {
-                            if (i == "R") {
-                                counter += 1
-                                resultList.replaceAll{ it ->
-                                    map[it]?.second ?: it
-                                }
-                            }else if (i == "L") {
-                                counter += 1
-                                resultList.replaceAll{ it ->
-                                    map[it]?.first ?: it
-                                }
-                            }
+                    val previousList = resultList.toList()
+                    instructionChars.forEach { i ->
+                        when (i) {
+                            'R' -> resultList.replaceAll{ map[it]?.second ?: it}
+                            'L' -> resultList.replaceAll{ map[it]?.first ?: it}
 
-                            if (resultList.all { it.endsWith("Z")} ) {
-                                return counter
-                            }
                         }
-
+                        counter++
+                        println(counter)
+                    }
+                    if (previousList == resultList) {
+                        break
+                    }
+                    if (resultList.all { it.endsWith("Z") }) {
+                        return counter
                     }
                 }
-                return counter
+                return if (resultList.all { it.endsWith("Z") }) counter else -1
             }
         } catch (e: IOException) {
             e.printStackTrace()
