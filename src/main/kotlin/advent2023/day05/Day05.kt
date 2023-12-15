@@ -112,7 +112,6 @@ class Day05 {
         val classLoader = this.javaClass.classLoader
         val resource = classLoader.getResource(filePath)
         val file = File(resource!!.toURI())
-        print("started")
         try {
             BufferedReader(FileReader(file)).use { bufferedReader ->
                 var l: String?
@@ -193,7 +192,7 @@ class Day05 {
                     try {
                         soil = getDestFromSource2(soil, map)
                     } catch (e: OutOfMemoryError) {
-                        e.printStackTrace().also { println("$soil") }
+                        e.printStackTrace()
 
                     }
                 }

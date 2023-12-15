@@ -90,7 +90,6 @@ class Day08 {
 
                         }
                         counter++
-                        println(counter)
                     }
                     if (previousList == resultList) {
                         break

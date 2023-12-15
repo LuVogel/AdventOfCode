@@ -66,13 +66,6 @@ class Day10 {
                     }
                     yCount += 1
                 }
-
-//                for (i in twoDArray.indices) {
-//                    for (j in twoDArray.indices) {
-//                        print(twoDArray[i][j])
-//                    }
-//                    println()
-//                }
                 val startXPosition = currentXPosition
                 val startYPosition = currentYPosition
                 val symbols : List<String> = listOf("|", "-", "J", "L", "F", "7")
@@ -80,10 +73,13 @@ class Day10 {
                     var maxDistance = 0L
                     var lastXPosition = Int.MIN_VALUE
                     var lastYPosition = Int.MIN_VALUE
+                    currentXPosition = startXPosition
+                    currentYPosition = startYPosition
                     while (!goalFound(startXPosition, startYPosition, currentXPosition, currentYPosition, maxDistance)) {
                         if (maxDistance == 0L) {
                             var pos = findNextPossibleSymbol(twoDArray, currentXPosition, currentYPosition, currentSymbol)
-                            currentXPosition = pos!!.first.first
+                                ?: break
+                            currentXPosition = pos.first.first
                             currentYPosition = pos.first.second
                             lastXPosition = pos.second.first
                             lastYPosition = pos.second.second
@@ -112,19 +108,19 @@ class Day10 {
     }
 
     private fun findNextSymbol(twoDArray: Array<Array<String>>, currentXPosition: Int, currentYPosition: Int, lastXPosition: Int, lastYPosition: Int): Pair<Pair<Int, Int>, Pair<Int, Int>>? {
-        var currentSymbol = twoDArray[currentYPosition][currentXPosition]
+        var currentSymbol = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition)
         if (currentSymbol == "|") {
             //north-south
             if (lastYPosition == currentYPosition-1) {
                 //going down
-                var nextDown = twoDArray[currentYPosition+1][currentXPosition]
-                if (nextDown == "J" || nextDown == "L" || nextDown == "|") {
+                var nextDown = twoDArray.getOrNull(currentYPosition+1)?.getOrNull(currentXPosition)
+                if (nextDown == "J" || nextDown == "L" || nextDown == "|" || nextDown == "S") {
                     return Pair(Pair(currentXPosition, currentYPosition+1), Pair(currentXPosition, currentYPosition))
                 }
             } else if (lastYPosition == currentYPosition+1) {
                 //going up
-                var nextUp = twoDArray[currentYPosition-1][currentXPosition]
-                if (nextUp == "|" || nextUp == "7" || nextUp == "F") {
+                var nextUp = twoDArray.getOrNull(currentYPosition-1)?.getOrNull(currentXPosition)
+                if (nextUp == "|" || nextUp == "7" || nextUp == "F" || nextUp == "S") {
                     return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
                 }
             }
@@ -132,62 +128,62 @@ class Day10 {
             //west-east
             if (lastXPosition == currentXPosition+1) {
                 //goingLeft
-                var nextLeft = twoDArray[currentYPosition][currentXPosition-1]
-                if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F") {
+                var nextLeft = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition-1)
+                if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F" || nextLeft == "S") {
                     return Pair(Pair(currentXPosition-1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
             } else if (lastXPosition == currentXPosition-1) {
                 //goingRight
-                var nextRight = twoDArray[currentYPosition][currentXPosition+1]
-                if (nextRight == "J" || nextRight == "-" || nextRight == "7") {
+                var nextRight = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition+1)
+                if (nextRight == "J" || nextRight == "-" || nextRight == "7" || nextRight == "S") {
                     return Pair(Pair(currentXPosition+1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
             }
 
         } else if (currentSymbol == "J") {
             //north-west
-            if (lastYPosition == currentYPosition+1) {
+            if (lastXPosition == currentXPosition-1) {
                 //goingUp
-                var nextUp = twoDArray[currentYPosition-1][currentXPosition]
-                if (nextUp == "|" || nextUp == "7" || nextUp == "F") {
+                var nextUp = twoDArray.getOrNull(currentYPosition-1)?.getOrNull(currentXPosition)
+                if (nextUp == "|" || nextUp == "7" || nextUp == "F" || nextUp == "S") {
                     return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
                 }
-            } else if (lastXPosition == currentXPosition+1) {
+            } else if (lastYPosition == currentYPosition-1) {
                 //goingLeft
-                var nextLeft = twoDArray[currentYPosition][currentXPosition-1]
-                if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F") {
+                var nextLeft = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition-1)
+                if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F" || nextLeft == "S") {
                     return Pair(Pair(currentXPosition-1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
             }
 
         } else if (currentSymbol == "L") {
             //north-east
-            if (lastYPosition == currentYPosition+1) {
+            if (lastXPosition == currentXPosition+1) {
                 //goingUp
-                var nextUp = twoDArray[currentYPosition-1][currentXPosition]
-                if (nextUp == "|" || nextUp == "7" || nextUp == "F") {
+                var nextUp = twoDArray.getOrNull(currentYPosition-1)?.getOrNull(currentXPosition)
+                if (nextUp == "|" || nextUp == "7" || nextUp == "F" || nextUp == "S") {
                     return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
                 }
-            } else if (lastXPosition == currentXPosition-1) {
+            } else if (lastYPosition == currentYPosition-1) {
                 //goingRight
-                //TODO: überarbeiten --> goingRight wenn ich von oben komme. Also lastYPos == currentYPos-1
-                //für alle hier überprüfen in dieser Methode
-                var nextRight = twoDArray[currentYPosition][currentXPosition+1]
-                if (nextRight == "J" || nextRight == "-" || nextRight == "7") {
+                var nextRight = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition+1)
+                if (nextRight == "J" || nextRight == "-" || nextRight == "7" || nextRight == "S") {
                     return Pair(Pair(currentXPosition+1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
             }
 
         } else if (currentSymbol == "F") {
             //south-east
-            if (lastYPosition == currentYPosition+1) {
-                var nextDown = twoDArray[currentYPosition-1][currentXPosition]
-                if (nextDown == "J" || nextDown == "L" || nextDown == "|") {
-                    return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
+            if (lastXPosition == currentXPosition+1) {
+                //goingDown
+                var nextDown = twoDArray.getOrNull(currentYPosition+1)?.getOrNull(currentXPosition)
+                if (nextDown == "J" || nextDown == "L" || nextDown == "|" || nextDown == "S") {
+                    return Pair(Pair(currentXPosition, currentYPosition+1), Pair(currentXPosition, currentYPosition))
                 }
-            } else if (lastXPosition == currentXPosition-1) {
-                var nextRight = twoDArray[currentYPosition][currentXPosition+1]
-                if (nextRight == "J" || nextRight == "-" || nextRight == "7") {
+            } else if (lastYPosition == currentYPosition+1) {
+                //goingRight
+                var nextRight = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition+1)
+                if (nextRight == "J" || nextRight == "-" || nextRight == "7" || nextRight == "S") {
                     return Pair(Pair(currentXPosition+1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
             }
@@ -195,14 +191,16 @@ class Day10 {
 
         } else if (currentSymbol == "7") {
             //south-west
-            if (lastYPosition == currentYPosition+1) {
-                var nextDown = twoDArray[currentYPosition-1][currentXPosition]
-                if (nextDown == "J" || nextDown == "L" || nextDown == "|") {
-                    return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
+            if (lastXPosition == currentXPosition-1) {
+                //goingDown from left
+                var nextDown = twoDArray.getOrNull(currentYPosition+1)?.getOrNull(currentXPosition)
+                if (nextDown == "J" || nextDown == "L" || nextDown == "|" || nextDown == "S") {
+                    return Pair(Pair(currentXPosition, currentYPosition+1), Pair(currentXPosition, currentYPosition))
                 }
-            } else if (lastXPosition == currentXPosition-1) {
-                var nextLeft = twoDArray[currentYPosition][currentXPosition+1]
-                if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F") {
+            } else if (lastYPosition == currentYPosition+1) {
+                //goingLeft from down
+                var nextLeft = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition-1)
+                if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F" || nextLeft == "S") {
                     return Pair(Pair(currentXPosition-1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
             }
@@ -219,22 +217,22 @@ class Day10 {
     ): Pair<Pair<Int, Int>, Pair<Int, Int>>? {
         if (currentSymbol == "|") {
             //north-south
-            var nextUp = twoDArray[currentYPosition-1][currentXPosition]
-            if (nextUp == "|" || nextUp == "7" || nextUp == "F") {
-                return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
-            } else {
-                var nextDown = twoDArray[currentYPosition+1][currentXPosition]
+            var nextUp = twoDArray.getOrNull(currentYPosition-1)?.getOrNull(currentXPosition)
+                if (nextUp == "|" || nextUp == "7" || nextUp == "F") {
+                    return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
+                } else {
+                var nextDown = twoDArray.getOrNull(currentYPosition+1)?.getOrNull(currentXPosition)
                 if (nextDown == "J" || nextDown == "L" || nextDown == "|") {
                     return Pair(Pair(currentXPosition, currentYPosition+1), Pair(currentXPosition, currentYPosition))
                 }
             }
         } else if (currentSymbol == "-") {
             //west-east
-            var nextLeft = twoDArray[currentYPosition][currentXPosition-1]
+            var nextLeft = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition-1)
             if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F") {
                 return Pair(Pair(currentXPosition-1, currentYPosition), Pair(currentXPosition, currentYPosition))
             } else {
-                var nextRight = twoDArray[currentYPosition][currentXPosition+1]
+                var nextRight = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition+1)
                 if (nextRight == "J" || nextRight == "-" || nextRight == "7") {
                     return Pair(Pair(currentXPosition+1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
@@ -242,11 +240,11 @@ class Day10 {
 
         } else if (currentSymbol == "J") {
             //north-west
-            var nextUp = twoDArray[currentYPosition-1][currentXPosition]
+            var nextUp = twoDArray.getOrNull(currentYPosition-1)?.getOrNull(currentXPosition)
             if (nextUp == "|" || nextUp == "7" || nextUp == "F") {
                 return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
             } else {
-                var nextLeft = twoDArray[currentYPosition][currentXPosition-1]
+                var nextLeft = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition-1)
                 if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F") {
                     return Pair(Pair(currentXPosition-1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
@@ -254,11 +252,11 @@ class Day10 {
 
         } else if (currentSymbol == "L") {
             //north-east
-            var nextUp = twoDArray[currentYPosition-1][currentXPosition]
+            var nextUp = twoDArray.getOrNull(currentYPosition-1)?.getOrNull(currentXPosition)
             if (nextUp == "|" || nextUp == "7" || nextUp == "F") {
                 return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
             } else {
-                var nextRight = twoDArray[currentYPosition][currentXPosition+1]
+                var nextRight = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition+1)
                 if (nextRight == "J" || nextRight == "-" || nextRight == "7") {
                     return Pair(Pair(currentXPosition+1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
@@ -266,11 +264,11 @@ class Day10 {
 
         } else if (currentSymbol == "F") {
             //south-east
-            var nextDown = twoDArray[currentYPosition-1][currentXPosition]
+            var nextDown = twoDArray.getOrNull(currentYPosition+1)?.getOrNull(currentXPosition)
             if (nextDown == "J" || nextDown == "L" || nextDown == "|") {
-                return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
+                return Pair(Pair(currentXPosition, currentYPosition+1), Pair(currentXPosition, currentYPosition))
             } else {
-                var nextRight = twoDArray[currentYPosition][currentXPosition+1]
+                var nextRight = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition+1)
                 if (nextRight == "J" || nextRight == "-" || nextRight == "7") {
                     return Pair(Pair(currentXPosition+1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
@@ -279,18 +277,17 @@ class Day10 {
 
         } else if (currentSymbol == "7") {
             //south-west
-            var nextDown = twoDArray[currentYPosition-1][currentXPosition]
+            var nextDown = twoDArray.getOrNull(currentYPosition-1)?.getOrNull(currentXPosition)
             if (nextDown == "J" || nextDown == "L" || nextDown == "|") {
                 return Pair(Pair(currentXPosition, currentYPosition-1), Pair(currentXPosition, currentYPosition))
             } else {
-                var nextLeft = twoDArray[currentYPosition][currentXPosition+1]
+                var nextLeft = twoDArray.getOrNull(currentYPosition)?.getOrNull(currentXPosition+1)
                 if (nextLeft == "-" || nextLeft == "L" || nextLeft == "F") {
                     return Pair(Pair(currentXPosition-1, currentYPosition), Pair(currentXPosition, currentYPosition))
                 }
             }
 
         }
-        System.exit(-1)
         return null
     }
 
@@ -304,15 +301,41 @@ class Day10 {
         val classLoader = this.javaClass.classLoader
         val resource = classLoader.getResource(filePath)
         val file = File(resource!!.toURI())
+        val width = file.readLines().size
+        val height = file.useLines { l ->
+            l.first().length
+        }
+        val twoDArray : Array<Array<String>> = Array(width) { Array(height) { "" } }
         try {
             BufferedReader(FileReader(file)).use { bufferedReader ->
                 var lines: String?
-                var sumOfHistories: Long = 0
+                var yCount = 0
+                var startXPosition = 0
+                var startYPosition = 0
                 while (bufferedReader.readLine().also { lines = it } != null) {
-
+                    var xCount = 0
+                    var split = lines!!.split("")
+                    for (symbol in split) {
+                        if (symbol.isNotBlank()) {
+                            if (symbol == "S") {
+                                startXPosition = xCount
+                                startYPosition = yCount
+                            }
+                            twoDArray[yCount][xCount] = symbol
+                            xCount += 1
+                        }
+                    }
+                    yCount += 1
                 }
+                for (y in twoDArray.indices) {
+                    for (x in twoDArray[y].indices) {
+                        var currentSymbol = twoDArray[y][x]
+                        if (currentSymbol == ".") {
 
-                return sumOfHistories
+                        }
+                    }
+                }
+                return 0
             }
         } catch (e: IOException) {
             e.printStackTrace()
