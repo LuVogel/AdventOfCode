@@ -205,6 +205,7 @@ class Day05 {
         }
 
         return location
+
     }
     private fun getDestFromSource2(source: Long, destList: MutableList<String>): Long {
         for (seedToSoil in destList) {
