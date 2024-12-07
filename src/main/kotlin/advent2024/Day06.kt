@@ -9,6 +9,8 @@ class Day06 : BasePuzzle() {
     var direction = ""
     var initialDirection = ""
     var initialPosition = Pair(0, 0)
+    val visitedPos = mutableSetOf<Pair<Int, Int>>()
+    var possibleLoopPositions = mutableListOf<Pair<Int, Int>>()
 
 
     override fun puzzle1(filePath: String): Any {
@@ -37,7 +39,6 @@ class Day06 : BasePuzzle() {
         else return "end"
     }
 
-    val visitedPos = mutableSetOf<Pair<Int, Int>>()
 
     private fun walkAndMark(matrixList: MutableList<MutableList<String>>): Any {
         visitedPos.add(guardPos)
@@ -106,16 +107,19 @@ class Day06 : BasePuzzle() {
         initialPosition = guardPosList.first()
         initialDirection = getDirection(matrixList)
         direction = getDirection(matrixList)
+        walkAndMark(matrixList)
+        guardPos = initialPosition
+        direction = initialDirection
         var loops = 0
         for (i in matrixList.indices) {
             for (j in matrixList[i].indices) {
-                if (matrixList[i][j] == ".") {
+                if (visitedPos.contains(Pair(j, i)) && matrixList[i][j] == ".") {
                     matrixList[i][j] = "#"
-                    println("replace $i, $j")
                     loops += walkAndSearchForLoop(matrixList)
                     matrixList[i][j] = "."
                     guardPos = initialPosition
                     direction = initialDirection
+                    possibleLoopPositions.clear()
                 }
             }
         }
@@ -124,13 +128,29 @@ class Day06 : BasePuzzle() {
     }
 
     private fun walkAndSearchForLoop(matrixList: MutableList<MutableList<String>>): Int {
+        possibleLoopPositions.add(guardPos)
         while (guardPos.first in 0 until matrixList.size &&
             guardPos.second in 0 until matrixList[0].size) {
-            moveIntoDirection(matrixList)
-            if (direction == initialDirection && guardPos == initialPosition) {
+            if (containsRepeatedSubsequences(possibleLoopPositions, 6)) {
                 return 1
             }
+            possibleLoopPositions.add(moveIntoDirection(matrixList))
+
         }
         return 0
+    }
+
+    fun containsRepeatedSubsequences(list: MutableList<Pair<Int, Int>>, minLength: Int): Boolean {
+        val seenSubsequences = mutableSetOf<List<Pair<Int,Int>>>()
+        val repeatedSubsequences = mutableSetOf<List<Pair<Int,Int>>>()
+
+        for (i in 0..list.size - minLength) {
+            val subsequence = list.subList(i, i + minLength)
+            if (!seenSubsequences.add(subsequence)) {
+                repeatedSubsequences.add(subsequence)
+            }
+        }
+
+        return repeatedSubsequences.toList().isNotEmpty()
     }
 }
