@@ -1,65 +1,74 @@
 package advent2024
 
 import utils.BasePuzzle
-import kotlin.math.abs
-import kotlin.math.max
 
 class Day08 : BasePuzzle() {
 
     override fun puzzle1(filePath: String): Any {
         val input = getInput(filePath)
         val matrixList = convertInputToMatrix(input)
+        val maxRows = matrixList.size-1
+        val maxCols = matrixList.size-1
         val antennas = findAntennas(matrixList)
-        val maxRows = matrixList.size
-        val maxCols = matrixList.size
         val foundLocations = mutableSetOf<Pair<Int, Int>>()
         antennas.toSortedMap()
-        for ((antennaNames, antennaPositions) in antennas) {
-            for (i in antennaPositions.indices) {
-                for (j in i+1 until antennaPositions.size) {
-                    val currentLocationsFound = findLocationsWithAntennas(antennaPositions[i], antennaPositions[j], maxRows, maxCols)
-                    foundLocations.addAll(currentLocationsFound)
-                }
-            }
-        }
-        return foundLocations.size
+        return getLocationCount(antennas, 1, matrixList, maxRows, maxCols).size
 
 
     }
 
     override fun puzzle2(filePath: String): Any {
-        TODO("Not yet implemented")
+        val input = getInput(filePath)
+        val matrixList = convertInputToMatrix(input)
+        val maxRows = matrixList.size-1
+        val maxCols = matrixList.size-1
+        val antennas = findAntennas(matrixList)
+        antennas.toSortedMap()
+        val locations = getLocationCount(antennas,maxRows+maxCols, matrixList, maxRows, maxCols)
+        antennas.forEach { locations.addAll(it.value) }
+        return locations.size
     }
 
-
-    private fun findLocationsWithAntennas(antennaPos1: Pair<Int, Int>, antennaPos2: Pair<Int, Int>, maxRows: Int, maxCols: Int): MutableSet<Pair<Int, Int>> {
-
-
-        val (p1, p2) = findLocations(antennaPos1, antennaPos2)
+    private fun getLocationCount(antennas: MutableMap<String, MutableList<Pair<Int, Int>>>, steps: Int, matrixList: MutableList<MutableList<String>>, maxRows: Int, maxCols: Int) : MutableSet<Pair<Int, Int>> {
         val foundLocations = mutableSetOf<Pair<Int, Int>>()
-        if (p1.first in 0..maxRows) {
-            if (p1.second in 0..maxCols) {
-                foundLocations.add(Pair(p1.first, p1.second))
+        for ((antennaNames, antennaPositions) in antennas) {
+            for (i in antennaPositions.indices) {
+                for (j in i+1 until antennaPositions.size) {
+                    val currentLocationsFound = findLocationsWithAntennas(antennaPositions[i], antennaPositions[j], maxRows, maxCols, steps)
+                    foundLocations.addAll(currentLocationsFound)
+                }
             }
         }
-        if (p2.first in 0..maxRows) {
-            if (p2.second in 0..maxCols) {
-                foundLocations.add(Pair(p2.first, p2.second))
-            }
-        }
-
         return foundLocations
     }
 
-    private fun findLocations(antennaPos1: Pair<Int, Int>, antennaPos2: Pair<Int, Int>):Pair<Pair<Int, Int>, Pair<Int, Int>> {
 
-        val diffX = antennaPos1.first - antennaPos2.first
-        val diffY = antennaPos1.second - antennaPos2.second
+    private fun findLocationsWithAntennas(antennaPos1: Pair<Int, Int>, antennaPos2: Pair<Int, Int>, maxRows: Int, maxCols: Int, steps: Int): MutableSet<Pair<Int, Int>> {
+        val foundLocations = mutableSetOf<Pair<Int, Int>>()
+        val tempLocations = mutableSetOf<Pair<Int, Int>>()
+        for (m in 2 until (2 + steps)) {
+            val (p1, p2) = findLocations(antennaPos1, antennaPos2, m)
+            tempLocations.add(p1)
+            tempLocations.add(p2)
+        }
+        for (p in tempLocations) {
+            if (p.first in 0..maxRows) {
+                if (p.second in 0..maxCols) {
+                    foundLocations.add(Pair(p.first, p.second))
+                }
+            }
+        }
+        return foundLocations
+    }
 
-        val newPos1 = Pair(antennaPos1.first - diffX * 2, antennaPos1.second - diffY * 2)
-        val newPos2 = Pair(antennaPos2.first + diffX * 2, antennaPos2.second + diffY * 2)
-        println("pos1: (${antennaPos1.first}, ${antennaPos1.second}), pos2: (${antennaPos2.first}, ${antennaPos2.second}), newPos1: (${newPos1.first}, ${newPos1.second}), newPos2: (${newPos2.first}, ${newPos2.second})")
-        return Pair(newPos1, newPos2)
+    private fun findLocations(antennaPos1: Pair<Int, Int>, antennaPos2: Pair<Int, Int>, multiplyBy : Int):Pair<Pair<Int, Int>, Pair<Int, Int>> {
+
+            val diffX = antennaPos1.first - antennaPos2.first
+            val diffY = antennaPos1.second - antennaPos2.second
+
+            val newPos1 = Pair(antennaPos1.first - (diffX * multiplyBy), antennaPos1.second - (diffY * multiplyBy))
+            val newPos2 = Pair(antennaPos2.first + (diffX * multiplyBy), antennaPos2.second + (diffY * multiplyBy))
+            return Pair(newPos1, newPos2)
     }
 
     private fun findAntennas(matrixList: MutableList<MutableList<String>>): MutableMap<String, MutableList<Pair<Int, Int>>> {

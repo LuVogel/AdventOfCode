@@ -17,15 +17,20 @@ class Day08Test : TestPuzzle() {
     override fun puzzle1Input() {
         val day08 = Day08()
         val res = day08.puzzle1("advent2024/Day08/input1.txt")
-        assertEquals(14, res)
+        assertEquals(291, res)
     }
 
-
+    @Test
     override fun puzzle2Test() {
-        TODO("Not yet implemented")
+        val day08 = Day08()
+        val res = day08.puzzle2("advent2024/Day08/test-input.txt")
+        assertEquals(34, res)
     }
 
+    @Test
     override fun puzzle2Input() {
-        TODO("Not yet implemented")
+        val day08 = Day08()
+        val res = day08.puzzle2("advent2024/Day08/input1.txt")
+        assertEquals(1015, res)
     }
 }
