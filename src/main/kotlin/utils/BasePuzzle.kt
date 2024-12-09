@@ -11,5 +11,4 @@ abstract class BasePuzzle {
     fun getInput(filePath: String): MutableList<String> {
         return helper.readFilesAsStringList(filePath)
     }
-
 }
