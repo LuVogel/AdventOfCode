@@ -16,13 +16,11 @@ class Day09 : BasePuzzle() {
     override fun puzzle2(filePath: String): Long {
         val input = getInput(filePath)
         val split = input[0].split("").filter { it.isNotBlank() or it.isNotEmpty() }.toMutableList()
-        println("split: $split")
         val (fileMap, emptyMap) = createDotedLine(split)
-        println("fileMap: $fileMap")
         val sortedReversedFileMap = fileMap.toSortedMap(compareByDescending { it }).toMutableMap()
-        println("sorted: $sortedReversedFileMap\nemptyMap: $emptyMap")
-        val movedLine = moveFilesToFront(sortedReversedFileMap, emptyMap).toSortedMap()
-        println("moved: $movedLine")
+        val sortedEmpty = emptyMap.toSortedMap()
+        sortedEmpty.remove(sortedEmpty.lastKey())
+        val movedLine = moveFilesToFront(sortedReversedFileMap, sortedEmpty).toSortedMap()
         return calculateSum(movedLine)
     }
 
@@ -38,8 +36,8 @@ class Day09 : BasePuzzle() {
                     if (smallestFound.key < index) {
                         movedFiles[smallestFound.key] = Pair(currentLength, currentId)
                         emptyMap.remove(smallestFound.key)
-                        if (smallestFound.key - currentLength > 0) {
-                            val diff = smallestFound.key- currentLength
+                        if (smallestFound.value - currentLength > 0) {
+                            val diff = smallestFound.value - currentLength
                             val newIndex = currentLength + smallestFound.key
                             emptyMap[newIndex] = diff
                         }
@@ -103,7 +101,7 @@ class Day09 : BasePuzzle() {
         for (index in filledLine.keys) {
             val currentId = filledLine[index]!!.second
             val currentLength = filledLine[index]!!.first
-            for (i in index .. index+currentLength) {
+            for (i in index until index+currentLength) {
                 sum += i.toLong() * currentId.toLong()
             }
         }

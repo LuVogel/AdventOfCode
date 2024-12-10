@@ -1,7 +1,6 @@
 package advent2024
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import utils.TestPuzzle
 import kotlin.test.Test
 
@@ -32,7 +31,6 @@ class Day09Test : TestPuzzle() {
     override fun puzzle2Input() {
         val day09 = Day09()
         val res = day09.puzzle2("advent2024/Day09/input1.txt")
-        println(res)
-        assertNotEquals(6265343703607L, res)
+        assertEquals(6265268809555L, res)
     }
 }
