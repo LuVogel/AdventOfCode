@@ -11,4 +11,8 @@ abstract class BasePuzzle {
     fun getInput(filePath: String): MutableList<String> {
         return helper.readFilesAsStringList(filePath)
     }
+
+    fun convertInputToMatrix(input: MutableList<String>): MutableList<MutableList<String>> {
+        return helper.convertInputToMatrix(input)
+    }
 }

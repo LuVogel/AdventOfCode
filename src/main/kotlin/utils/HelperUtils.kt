@@ -29,4 +29,12 @@ class HelperUtils {
         }
         return list
     }
+
+    public fun convertInputToMatrix(list: MutableList<String>): MutableList<MutableList<String>> {
+        val matrixList = mutableListOf<MutableList<String>>()
+        for (line in list) {
+            matrixList.add(line.toList().map { it.toString() }.toMutableList())
+        }
+        return matrixList
+    }
 }
