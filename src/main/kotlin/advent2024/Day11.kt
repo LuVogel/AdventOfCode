@@ -16,9 +16,7 @@ class Day11 : BasePuzzle() {
     override fun puzzle2(filePath: String): Any {
         val input = getInput(filePath)
         var stones = input[0].split(" ").mapNotNull { it.ifEmpty { null } }.toMutableList()
-//        return blinkIterative(stones)
 
-        var stoneMap = mutableMapOf(0 to stones)
         var res = 0L
         for (stone in stones) {
             res += blinkOnceRec(stone, 75)
@@ -27,26 +25,6 @@ class Day11 : BasePuzzle() {
         return res
     }
 
-    fun blinkIterative(stones: List<Long>): Long {
-        var res = 0L
-        val queue = ArrayDeque<Pair<Long, Int>>()
-
-        // Initialisiere die Queue mit den Startsteinen
-        stones.forEach { stone -> queue.add(Pair(stone, 0)) }
-
-        while (queue.isNotEmpty()) {
-            val (currentStone, depth) = queue.removeFirst()
-
-            if (depth == 75) {
-                res++
-            } else {
-                val newStones = applyRulesToStone(currentStone)
-                newStones.forEach { queue.add(Pair(it, depth + 1)) }
-            }
-        }
-
-        return res
-    }
 
     var memo = mutableMapOf<String, Long>()
     private fun blinkOnceRec(stone: String, times: Int): Long {
@@ -54,14 +32,13 @@ class Day11 : BasePuzzle() {
         val key = "$stone,$times"
         val found = memo[key]
         if (found != null) return found
-
-        val newValue = when {
-            //Strings da stone.tosString() --> Heap Space
-            stone == "0" -> return blinkOnceRec("1", times-1)
-            stone.length % 2 == 0 ->
-                blinkOnceRec(stone.substring(0, stone.length/2).toLong().toString(), times-1) +
-                        blinkOnceRec(stone.substring(stone.length/2, stone.length).toLong().toString(), times-1)
-            else -> blinkOnceRec((stone.toLong() * 2024).toString(), times-1)
+        val newValue = if (stone == "0") {
+            return blinkOnceRec("1", times-1)
+        } else if (stone.length % 2 == 0) {
+            blinkOnceRec(stone.substring(0, stone.length / 2).toLong().toString(), times - 1) +
+                    blinkOnceRec(stone.substring(stone.length / 2, stone.length).toLong().toString(), times - 1)
+        } else {
+            blinkOnceRec((stone.toLong() * 2024).toString(), times-1)
         }
         memo[key] = newValue
         return newValue
