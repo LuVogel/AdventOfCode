@@ -16,7 +16,7 @@ class Day03Test : TestPuzzle() {
     @Test
     override fun puzzle1Input() {
         val day03 = Day03()
-        val res = day03.puzzle1("advent2024/Day03/input1.txt")
+        val res = day03.puzzle1("advent2024/Day03/input.txt")
         assertEquals(173785482, res)
     }
 
@@ -30,7 +30,7 @@ class Day03Test : TestPuzzle() {
     @Test
     override fun puzzle2Input() {
         val day03 = Day03()
-        val res = day03.puzzle2("advent2024/Day03/input1.txt")
+        val res = day03.puzzle2("advent2024/Day03/input.txt")
         assertEquals(83158140, res)
     }
 }
