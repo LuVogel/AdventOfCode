@@ -10,14 +10,6 @@ class Day12 : BasePuzzle() {
                      var perimeter : Int = 0,
                      var sides: Int = 0)
 
-
-
-    private val directions = listOf(
-        Pair(1, 0),
-        Pair(-1, 0),
-        Pair(0, -1),
-        Pair(0, 1)
-    )
     private var visited = mutableListOf<Pair<Int, Int>>()
     private var maxI = 0
     private var maxJ = 0
@@ -46,84 +38,39 @@ class Day12 : BasePuzzle() {
         maxJ = matrixList[0].size
         areas = getAreas()
         for (area in areas) {
-            area.sides = countSides(area)
-        }
-        for (area in areas) {
-            println("area: ${area.name} with pos: ${area.positions}\n" +
-                    "and sides: ${area.sides}")
+            area.sides = countCorners(area)
         }
         return areas.sumOf { area ->
             area.sides * area.positions.size
         }
     }
 
-    private fun countSides(area: Area): Int {
-        var sides = 0
-      for (position in area.positions) {
-          val currentBlock = matrixList[position.first][position.second]
-          val list = findEightNeighbours(currentBlock, position.first, position.second)
-          if ((!list[0] && list[2]) || (list[0] && !list[1] && list[2])) sides++
-          if ((!list[2] && !list[4] || (list[2] && !list[3] && list[4]))) sides++
-          if ((!list[4] && !list[6]) || (list[4] && !list[5] && list[6])) sides++
-          if ((!list[6] && !list[0]) || (list[6] && !list[7] && list[0])) sides++
-      }
-        return sides
-
-    }
-
-    private fun findEightNeighbours(currentBlock : String, row : Int, col : Int):  List<Boolean>{
-        val neigh1 = row -1 >= 0 && matrixList[row-1][col] == currentBlock //top
-        val neigh2 = row - 1 >= 0 && col + 1 < matrixList[0].size && matrixList[row - 1][col + 1] == currentBlock // top right
-        val neigh3 = col + 1 < matrixList[0].size && matrixList[row][col + 1] == currentBlock // right
-        val neigh4 = row + 1 < matrixList.size && col + 1 < matrixList[0].size && matrixList[row + 1][col + 1] == currentBlock // bottom right
-        val neigh5 = row + 1 < matrixList.size && matrixList[row + 1][col] == currentBlock // bottom
-        val neigh6 = row + 1 < matrixList.size && col - 1 >= 0 && matrixList[row + 1][col - 1] == currentBlock // bottom left
-        val neigh7 = col - 1 >= 0 && matrixList[row][col - 1] == currentBlock // left
-        val neigh8 = row - 1 >= 0 && col - 1 >= 0 && matrixList[row - 1][col - 1] == currentBlock // top left
-        return listOf(neigh1, neigh2, neigh3, neigh4, neigh5, neigh6, neigh7, neigh8)
-    }
-
-
-
-
-//
-//    fun isEdge(x: Int, y: Int): Boolean {
-//
-//        for ((dx, dy) in directions) {
-//            val nx = x + dx
-//            val ny = y + dy
-//            if (nx !in matrixList.indices || ny !in matrixList[0].indices || matrixList[nx][ny] != matrixList[x][y]) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
-    fun countEdges(area: Area): Int {
-        if (area.positions.isEmpty()) return 0
-
+    private fun countCorners(area: Area): Int {
         val directions = listOf(
-            Pair(-1, 0), // oben
-            Pair(1, 0),  // unten
-            Pair(0, -1), // links
-            Pair(0, 1)   // rechts
+            Pair(-1, 0), // Top
+            Pair(-1, 1), // Top Right
+            Pair(0, 1),  // Right
+            Pair(1, 1),  // Bottom Right
+            Pair(1, 0),  // Bottom
+            Pair(1, -1), // Bottom Left
+            Pair(0, -1), // Left
+            Pair(-1, -1) // Top Left
         )
-
-        val groupSet = area.positions.toSet() // Schnelle Überprüfung, ob ein Punkt zur Gruppe gehört
-        var edgeCount = 0
-
-        for ((x, y) in area.positions) {
-            for ((dx, dy) in directions) {
-                val nx = x + dx
-                val ny = y + dy
-
-                // Prüfe, ob der Nachbar außerhalb des Rasters liegt oder nicht zur Gruppe gehört
-                if (nx !in matrixList.indices || ny !in matrixList[0].indices || Pair(nx, ny) !in groupSet) {
-                    edgeCount++
-                }
+        var corners = 0
+        for (pos in area.positions) {
+            val (row, col) = pos
+            val adjacency = directions.map { (di, dj) ->
+                val ni = row + di
+                val nj = col + dj
+                ni to nj in area.positions
             }
-        }
+            if ((!adjacency[0] && !adjacency[2]) || (adjacency[0] && !adjacency[1] && adjacency[2])) corners++ // Top-Right Corner
+            if ((!adjacency[2] && !adjacency[4]) || (adjacency[2] && !adjacency[3] && adjacency[4])) corners++ // Bottom-Right Corner
+            if ((!adjacency[4] && !adjacency[6]) || (adjacency[4] && !adjacency[5] && adjacency[6])) corners++ // Bottom-Left Corner
+            if ((!adjacency[6] && !adjacency[0]) || (adjacency[6] && !adjacency[7] && adjacency[0])) corners++ // Top-Left Corner
 
-        return edgeCount
+        }
+        return corners
     }
 
 
